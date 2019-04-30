@@ -447,10 +447,27 @@ class EP_BP_API {
 
 		foreach ( $selected_taxonomies as $taxonomy ) {
 
-			$object_terms = wpmn_get_object_terms(
-				( isset( $object->ID ) ) ? $object->ID : $object->id, // groups have lowercase id property, members upper
-				$taxonomy->name
-			);
+			if ( function_exists( 'wpmn_get_object_terms' ) ) {
+				$object_terms = wpmn_get_object_terms(
+					( isset( $object->ID ) ) ? $object->ID : $object->id, // groups have lowercase id property, members upper
+					$taxonomy->name
+				);
+			} else {
+				$switched = false;
+				if ( ! bp_is_root_blog() ) {
+					switch_to_blog( bp_get_root_blog_id() );
+					$switched = true;
+				}
+
+				$object_terms = wp_get_object_terms(
+					( isset( $object->ID ) ) ? $object->ID : $object->id, // groups have lowercase id property, members upper
+					$taxonomy->name
+				);
+
+				if ( $switched ) {
+					restore_current_blog();
+				}
+			}
 
 			if ( ! $object_terms || is_wp_error( $object_terms ) ) {
 				continue;
