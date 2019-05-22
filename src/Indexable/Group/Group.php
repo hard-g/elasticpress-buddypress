@@ -76,7 +76,7 @@ class Group extends Indexable {
 			'date_created' => $group->date_created,
 			'meta'         => [],
 			'group_type'   => bp_groups_get_group_type( $group->id, false ),
-			//'meta'            => $this->prepare_meta_types( $this->prepare_meta( $user_id ) ),
+			'meta'            => $this->prepare_meta_types( $this->prepare_meta( $group->id ) ),
 		];
 
 		$group_args = apply_filters( 'epbp_group_sync_args', $group_args, $group_id );
@@ -124,5 +124,64 @@ class Group extends Indexable {
 			'objects'       => $objects,
 			'total_objects' => ( 0 === count( $objects ) ) ? 0 : (int) $wpdb->get_var( 'SELECT FOUND_ROWS()' ),
 		];
+	}
+
+	/**
+	 * Prepare meta to send to ES.
+	 *
+	 * @param int $group_id Group ID.
+	 * @return array
+	 */
+	public function prepare_meta( $group_id ) {
+		$meta = (array) groups_get_groupmeta( $group_id, '', false );
+
+		if ( empty( $meta ) ) {
+			return [];
+		}
+
+		$prepared_meta = [];
+
+		/**
+		 * Filter index-able private meta
+		 *
+		 * Allows for specifying private meta keys that may be indexed in the same manor as public meta keys.
+		 *
+		 * @param array $keys     Array of index-able private meta keys.
+		 * @param int   $group_id The current post to be indexed.
+		 */
+		$allowed_protected_keys = apply_filters( 'epbp_prepare_group_meta_allowed_protected_keys', [], $group_id );
+
+		/**
+		 * Filter non-indexed public meta
+		 *
+		 * Allows for specifying public meta keys that should be excluded from the ElasticPress index.
+		 *
+		 * @param array $keys     Array of public meta keys to exclude from index.
+		 * @param int   $group_id The current post to be indexed.
+		 */
+		$excluded_public_keys = apply_filters( 'epbp_prepare_group_meta_excluded_public_keys', [], $group_id );
+
+		foreach ( $meta as $key => $value ) {
+
+			$allow_index = false;
+
+			if ( is_protected_meta( $key ) ) {
+
+				if ( true === $allowed_protected_keys || in_array( $key, $allowed_protected_keys, true ) ) {
+					$allow_index = true;
+				}
+			} else {
+
+				if ( true !== $excluded_public_keys && ! in_array( $key, $excluded_public_keys, true ) ) {
+					$allow_index = true;
+				}
+			}
+
+			if ( true === $allow_index || apply_filters( 'epbp_prepare_group_meta_whitelist_key', false, $key, $group_id ) ) {
+				$prepared_meta[ $key ] = maybe_unserialize( $value );
+			}
+		}
+
+		return $prepared_meta;
 	}
 }
