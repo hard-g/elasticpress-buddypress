@@ -66,16 +66,16 @@ class Group extends Indexable {
 		}
 
 		$group_args = [
-			'ID'              => $group->id,
-			'name'      => $group->name,
-			'slug'      => $group->slug,
-			'url'   => bp_get_group_permalink( $group ),
-			'status'            => $group->status,
-			'creator_id'         => $group->creator_id,
-			'parent_id'     => $group->parent_id,
-			'date_created'    => $group->date_created,
-			'meta' => [],
-			'group_type' => bp_groups_get_group_type( $group->id, false ),
+			'ID'           => $group->id,
+			'name'         => $group->name,
+			'slug'         => $group->slug,
+			'url'          => bp_get_group_permalink( $group ),
+			'status'       => $group->status,
+			'creator_id'   => $group->creator_id,
+			'parent_id'    => $group->parent_id,
+			'date_created' => $group->date_created,
+			'meta'         => [],
+			'group_type'   => bp_groups_get_group_type( $group->id, false ),
 			//'meta'            => $this->prepare_meta_types( $this->prepare_meta( $user_id ) ),
 		];
 

@@ -31,6 +31,8 @@ class SyncManager extends SyncManagerAbstract {
 			return;
 		}
 
+		add_action( 'groups_group_after_save', [ $this, 'action_sync_on_update' ] );
+		/*
 		add_action( 'delete_user', [ $this, 'action_delete_user' ] );
 		add_action( 'wpmu_delete_user', [ $this, 'action_delete_user' ] );
 		add_action( 'profile_update', [ $this, 'action_sync_on_update' ] );
@@ -38,8 +40,22 @@ class SyncManager extends SyncManagerAbstract {
 		add_action( 'updated_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		add_action( 'added_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		add_action( 'deleted_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
+		*/
 
 		// @todo Handle deleted meta
+	}
+
+	/**
+	 * Sync ES index with what happened to the group being saved.
+	 *
+	 * @param BP_Groups_Group $group
+	 */
+	public function action_sync_on_update( \BP_Groups_Group $group ) {
+		if ( apply_filters( 'epbp_group_sync_kill', false, $group ) ) {
+			return;
+		}
+
+		$this->sync_queue[ $group->id ] = true;
 	}
 
 }
