@@ -118,13 +118,13 @@ function ep_bp_feature_box_summary() {
  * Register the feature
  */
 function ep_bp_register_feature() {
-	if ( function_exists( 'ep_register_feature' ) ) {
-		ep_register_feature( 'buddypress', [
-			'title' => 'BuddyPress',
-			'setup_cb' => 'ep_bp_setup',
-			'requirements_status_cb' => 'ep_bp_requirements_status',
-			'feature_box_summary_cb' => 'ep_bp_feature_box_summary',
-			'requires_install_reindex' => false,
-		] );
+	if ( ! class_exists( '\ElasticPress\Feature' ) ) {
+		return;
 	}
+
+	require __DIR__ . '/class-bpep-feature.php';
+
+	ElasticPress\Features::factory()->register_feature(
+		new BPEP_Feature()
+	);
 }

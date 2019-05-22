@@ -1,4 +1,7 @@
 <?php
+
+use ElasticPress\Indexables as Indexables;
+
 /**
  * Functions to add ElasticPress support for BuddyPress non-post content like group and members.
  * Inspired by EP_API.
@@ -73,7 +76,7 @@ class EP_BP_API {
 			'guid'              => bp_get_group_permalink(),
 		];
 
-		$args['meta'] = EP_API::factory()->prepare_meta_types( $args['post_meta'] );
+//		$args['meta'] = Indexables::factory()->prepare_meta_types( $args['post_meta'] );
 
 		return $args;
 	}
@@ -162,7 +165,7 @@ class EP_BP_API {
 			'guid'              => bp_get_member_permalink(),
 		];
 
-		$args['meta'] = EP_API::factory()->prepare_meta_types( $args['post_meta'] );
+//		$args['meta'] = Indexables::factory()->prepare_meta_types( $args['post_meta'] );
 
 		return $args;
 	}
