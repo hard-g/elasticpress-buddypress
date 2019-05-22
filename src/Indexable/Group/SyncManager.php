@@ -34,6 +34,7 @@ class SyncManager extends SyncManagerAbstract {
 		add_action( 'groups_group_after_save', [ $this, 'action_sync_on_update' ] );
 		add_action( 'updated_group_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		add_action( 'added_group_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
+		add_action( 'bp_groups_delete_group', [ $this, 'action_delete_group' ] );
 		/*
 		add_action( 'delete_user', [ $this, 'action_delete_user' ] );
 		add_action( 'wpmu_delete_user', [ $this, 'action_delete_user' ] );
@@ -68,5 +69,14 @@ class SyncManager extends SyncManagerAbstract {
 	 */
 	public function action_queue_meta_sync( $meta_id, $object_id, $meta_key, $meta_value ) {
 		$this->sync_queue[ $object_id ] = true;
+	}
+
+	/**
+	 * Deletes a group from the index on group delete.
+	 *
+	 * @param obj $group Group object.
+	 */
+	public function action_delete_group( $group ) {
+		Indexables::factory()->get( 'bp-group' )->delete( $group->id, false );
 	}
 }
