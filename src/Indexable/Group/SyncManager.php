@@ -32,13 +32,13 @@ class SyncManager extends SyncManagerAbstract {
 		}
 
 		add_action( 'groups_group_after_save', [ $this, 'action_sync_on_update' ] );
+		add_action( 'updated_group_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
+		add_action( 'added_group_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		/*
 		add_action( 'delete_user', [ $this, 'action_delete_user' ] );
 		add_action( 'wpmu_delete_user', [ $this, 'action_delete_user' ] );
 		add_action( 'profile_update', [ $this, 'action_sync_on_update' ] );
 		add_action( 'user_register', [ $this, 'action_sync_on_update' ] );
-		add_action( 'updated_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
-		add_action( 'added_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		add_action( 'deleted_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		*/
 
@@ -58,4 +58,15 @@ class SyncManager extends SyncManagerAbstract {
 		$this->sync_queue[ $group->id ] = true;
 	}
 
+	/**
+	 * When whitelisted meta is updated/added/deleted, queue the object for reindex.
+	 *
+	 * @param  int       $meta_id Meta id.
+	 * @param  int|array $object_id Object id.
+	 * @param  string    $meta_key Meta key.
+	 * @param  string    $meta_value Meta value.
+	 */
+	public function action_queue_meta_sync( $meta_id, $object_id, $meta_key, $meta_value ) {
+		$this->sync_queue[ $object_id ] = true;
+	}
 }
