@@ -29,8 +29,42 @@ class Groups extends Feature {
 	 */
 	public function setup() {
 		Indexables::factory()->register( new Group() );
+		add_action( 'init', [ $this, 'search_setup' ] );
 	//	add_action( 'widgets_init', [ $this, 'register_widget' ] );
 	//	add_filter( 'ep_formatted_args', [ $this, 'formatted_args' ], 10, 2 );
+	}
+
+	/**
+	 * Setup feature on each page load
+	 */
+	public function search_setup() {
+		add_filter( 'ep_elasticpress_enabled', [ $this, 'integrate_search_queries' ], 10, 2 );
+	}
+
+	/**
+	 * Enable integration on search queries
+	 *
+	 * @param  bool          $enabled Whether EP is enabled
+	 * @since  3.0
+	 * @return bool
+	 */
+	public function integrate_search_queries( $enabled, $query ) {
+		// This is a hack, since BP isn't passing an object.
+		if ( ! is_array( $query ) ) {
+			return $enabled;
+		}
+
+		if ( ! array_key_exists( 'group_type', $query ) ) {
+			return $enabled;
+		}
+
+		if ( isset( $query['ep_integrate'] ) && false === $query['ep_integrate'] ) {
+			$enabled = false;
+		} elseif ( ! empty( $query['search_terms'] ) ) {
+			$enabled = true;
+		}
+
+		return $enabled;
 	}
 
 	/**

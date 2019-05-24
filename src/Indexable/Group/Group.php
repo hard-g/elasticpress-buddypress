@@ -35,7 +35,7 @@ class Group extends Indexable {
 		];
 
 		$this->sync_manager      = new SyncManager( $this->slug );
-//		$this->query_integration = new QueryIntegration( $this->slug );
+		$this->query_integration = new QueryIntegration( $this->slug );
 	}
 
 	/**
@@ -183,5 +183,49 @@ class Group extends Indexable {
 		}
 
 		return $prepared_meta;
+	}
+
+	public function format_args( $args ) {
+		$formatted_args = [
+			'from' => $args['per_page'] * ( $args['page'] - 1 ),
+			'size' => $args['per_page'],
+		];
+		var_dump( $formatted_args );
+
+ /*
+ 'type' => string 'active' (length=6)
+  'orderby' => string 'last_activity' (length=13)
+  'order' => string 'DESC' (length=4)
+x  'per_page' => int 12
+x  'page' => int 1
+  'user_id' => int 0
+  'slug' =>
+    array (size=0)
+      empty
+  'search_terms' => string 'boone' (length=5)
+  'search_columns' =>
+    array (size=0)
+      empty
+  'group_type' => string '' (length=0)
+  'group_type__in' => string '' (length=0)
+  'group_type__not_in' => string '' (length=0)
+  'meta_query' =>
+    array (size=1)
+      0 =>
+        array (size=2)
+          'key' => string 'wds_group_type' (length=14)
+          'value' => string 'course' (length=6)
+  'include' => boolean false
+  'parent_id' => null
+  'update_meta_cache' => boolean true
+  'update_admin_cache' => boolean false
+  'exclude' => boolean false
+  'show_hidden' => boolean true
+  'status' =>
+    array (size=0)
+      empty
+  'fields' => string 'all' (length=3)
+  */
+		var_Dump( $args );
 	}
 }
