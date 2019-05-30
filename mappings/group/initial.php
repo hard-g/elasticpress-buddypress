@@ -125,10 +125,16 @@ return array(
 					'fields' => array(
 						'name' => array(
 							'type' => 'text',
+							'analyzer' => 'standard',
 						),
 						'raw'           => array(
 							'type'         => 'keyword',
 							'ignore_above' => 10922,
+						),
+						'sortable'   => array(
+							'type'         => 'keyword',
+							'ignore_above' => 10922,
+							'normalizer'   => 'lowerasciinormalizer',
 						),
 					),
 				),
@@ -190,6 +196,10 @@ return array(
 					'type' => 'long',
 				),
 				'date_created'             => array(
+					'type'   => 'date',
+					'format' => 'YYYY-MM-dd HH:mm:ss',
+				),
+				'last_activity'             => array(
 					'type'   => 'date',
 					'format' => 'YYYY-MM-dd HH:mm:ss',
 				),

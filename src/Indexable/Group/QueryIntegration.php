@@ -43,5 +43,13 @@ class QueryIntegration {
 
 		$formatted_args = $group_indexable->format_args( $r );
 
+		$ep_query = $group_indexable->query_es( $formatted_args, $r );
+
+		var_Dump( $ep_query );
+
+		if ( false === $ep_query ) {
+			$r['elasticsearch_success'] = false;
+			return $results;
+		}
 	}
 }

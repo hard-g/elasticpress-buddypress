@@ -65,18 +65,24 @@ class Group extends Indexable {
 			return false;
 		}
 
+		$last_activity = groups_get_groupmeta( $group->id, 'last_activity', true );
+		if ( ! $last_activity ) {
+			$last_activity = $group->date_created;
+		}
+
 		$group_args = [
-			'ID'           => $group->id,
-			'name'         => $group->name,
-			'slug'         => $group->slug,
-			'url'          => bp_get_group_permalink( $group ),
-			'status'       => $group->status,
-			'creator_id'   => $group->creator_id,
-			'parent_id'    => $group->parent_id,
-			'date_created' => $group->date_created,
-			'meta'         => [],
-			'group_type'   => bp_groups_get_group_type( $group->id, false ),
-			'meta'            => $this->prepare_meta_types( $this->prepare_meta( $group->id ) ),
+			'ID'            => $group->id,
+			'name'          => $group->name,
+			'slug'          => $group->slug,
+			'url'           => bp_get_group_permalink( $group ),
+			'status'        => $group->status,
+			'creator_id'    => $group->creator_id,
+			'parent_id'     => $group->parent_id,
+			'date_created'  => $group->date_created,
+			'meta'          => [],
+			'group_type'    => bp_groups_get_group_type( $group->id, false ),
+			'last_activity' => $last_activity,
+			'meta'          => $this->prepare_meta_types( $this->prepare_meta( $group->id ) ),
 		];
 
 		$group_args = apply_filters( 'epbp_group_sync_args', $group_args, $group_id );
@@ -159,7 +165,7 @@ class Group extends Indexable {
 		 * @param array $keys     Array of public meta keys to exclude from index.
 		 * @param int   $group_id The current post to be indexed.
 		 */
-		$excluded_public_keys = apply_filters( 'epbp_prepare_group_meta_excluded_public_keys', [], $group_id );
+		$excluded_public_keys = apply_filters( 'epbp_prepare_group_meta_excluded_public_keys', [ 'last_activity' ], $group_id );
 
 		foreach ( $meta as $key => $value ) {
 
@@ -185,10 +191,40 @@ class Group extends Indexable {
 		return $prepared_meta;
 	}
 
+	protected function parse_orderby( $args ) {
+		$sort = [];
+
+		// 'type' takes precedence.
+		$order   = isset( $args['order'] ) && 'DESC' === $args['order'] ? 'DESC' : 'ASC';
+		if ( 'alphabetical' === $args['type'] ) {
+			$sort[] = [
+				'name.sortable' => [
+					'order' => 'ASC',
+				],
+			];
+		} else {
+			$orderby = $args['orderby'];
+
+			switch ( $args['orderby'] ) {
+				case 'last_activity' :
+				case 'date_created' :
+					$sort[] = [
+						$orderby => [
+							'order' => $order,
+						],
+					];
+				break;
+			}
+		}
+
+		return $sort;
+	}
+
 	public function format_args( $args ) {
 		$formatted_args = [
 			'from' => $args['per_page'] * ( $args['page'] - 1 ),
 			'size' => $args['per_page'],
+			'sort' => $this->parse_orderby( $args ),
 		];
 		var_dump( $formatted_args );
 
@@ -227,5 +263,7 @@ x  'page' => int 1
   'fields' => string 'all' (length=3)
   */
 		var_Dump( $args );
+
+		return $formatted_args;
 	}
 }
