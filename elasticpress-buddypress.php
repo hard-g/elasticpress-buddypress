@@ -22,6 +22,10 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 }
 
 add_action( 'bp_include', function() {
+	if ( ! class_exists( '\ElasticPress\Features' ) ) {
+		return;
+	}
+
 	require __DIR__ . '/autoload.php';
 
 	App::init();
