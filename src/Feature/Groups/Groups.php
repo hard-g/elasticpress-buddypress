@@ -58,6 +58,9 @@ class Groups extends Feature {
 			return $enabled;
 		}
 
+		// @todo
+		return true;
+
 		if ( isset( $query['ep_integrate'] ) && false === $query['ep_integrate'] ) {
 			$enabled = false;
 		} elseif ( ! empty( $query['search_terms'] ) ) {

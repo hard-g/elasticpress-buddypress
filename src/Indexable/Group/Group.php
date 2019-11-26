@@ -221,14 +221,66 @@ class Group extends Indexable {
 	}
 
 	public function format_args( $args ) {
+//		$args['slug'] = [ 'henkles-portfolio' ];
+//		$args['slug'] = 'henkles-portfolio';
 		$formatted_args = [
 			'from' => $args['per_page'] * ( $args['page'] - 1 ),
 			'size' => $args['per_page'],
-			'sort' => $this->parse_orderby( $args ),
+// @todo last_activity needs to be a keyword in order to be sortable
+//			'sort' => $this->parse_orderby( $args ),
 		];
-		var_dump( $formatted_args );
 
+		$query = [];
+		$match = [];
+		$query_must = [];
+		$filter = [];
+
+		if ( $args['slug'] ) {
+			$filter[] = [
+				'terms' => [
+					'slug' => $args['slug'],
+				]
+			];
+		}
+
+		if ( $args['search_terms'] ) {
+			$filter[] = [
+				'match' => [
+					'name' => $args['search_terms'],
+				],
+			];
+		}
+
+		if ( $filter ) {
+			$query['bool']['filter'] = $filter;
+		}
+
+		if ( $query_must ) {
+			$query['must'] = $query_must;
+		}
+
+		if ( $match ) {
+			$query['match'] = $match;
+		}
+
+		if ( $query ) {
+			$formatted_args['query'] = $query;
+		}
+
+		$formatted_args = apply_filters( 'epbp_group_query_args', $formatted_args, $args );
+
+/*
+
+curl -X GET "localhost:9200/_search?pretty=true" -H 'Content-Type: application/json' -d'
+{
+    "query": {
+        "match_all": {}
+    }
+}
+'
+*/
  /*
+
  'type' => string 'active' (length=6)
   'orderby' => string 'last_activity' (length=13)
   'order' => string 'DESC' (length=4)
