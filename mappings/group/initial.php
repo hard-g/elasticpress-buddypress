@@ -60,17 +60,17 @@ return array(
 	),
 	'mappings' => array(
 		'bp-group' => array(
-			'date_detection'    => false,
+			'date_detection'    => true,
 			'dynamic_templates' => array(
 				array(
 					'template_meta_types' => array(
 						'path_match' => 'meta.*',
 						'mapping'    => array(
-							'type'       => 'object',
+							'type'       => 'nested',
 							'path'       => 'full',
 							'properties' => array(
 								'value'    => array(
-									'type'   => 'text',
+									'type'   => 'keyword',
 									'fields' => array(
 										'sortable' => array(
 											'type'         => 'keyword',
@@ -202,6 +202,12 @@ return array(
 				'last_activity'             => array(
 					'type'   => 'date',
 					'format' => 'YYYY-MM-dd HH:mm:ss',
+					'fields' => [
+						'type' => 'keyword',
+					],
+				),
+				'total_member_count' => array(
+					'type' => 'long',
 				),
 			),
 		),
