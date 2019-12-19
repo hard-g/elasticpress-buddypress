@@ -15,7 +15,7 @@ return array(
 			'analyzer'   => array(
 				'default'          => array(
 					'tokenizer' => 'standard',
-					'filter'    => array( 'standard', 'ewp_word_delimiter', 'lowercase', 'stop', 'ewp_snowball' ),
+					'filter'    => array( 'ewp_word_delimiter', 'lowercase', 'stop', 'ewp_snowball' ),
 					'language'  => apply_filters( 'ep_analyzer_language', 'english', 'analyzer_default' ),
 				),
 				'shingle_analyzer' => array(
@@ -32,7 +32,7 @@ return array(
 			'filter'     => array(
 				'shingle_filter'     => array(
 					'type'             => 'shingle',
-					'min_shingle_size' => 2,
+					'min_shingle_size' => 3,
 					'max_shingle_size' => 5,
 				),
 				'ewp_word_delimiter' => array(
@@ -59,155 +59,146 @@ return array(
 		),
 	),
 	'mappings' => array(
-		'bp-group' => array(
-			'date_detection'    => true,
-			'dynamic_templates' => array(
-				array(
-					'template_meta_types' => array(
-						'path_match' => 'meta.*',
-						'mapping'    => array(
-							'type'       => 'nested',
-							'path'       => 'full',
-							'properties' => array(
-								'value'    => array(
-									'type'   => 'keyword',
-									'fields' => array(
-										'sortable' => array(
-											'type'         => 'keyword',
-											'ignore_above' => 10922,
-											'normalizer'   => 'lowerasciinormalizer',
-										),
-										'raw'      => array(
-											'type'         => 'keyword',
-											'ignore_above' => 10922,
-										),
+		'date_detection'    => true,
+		'properties' => array(
+			'ID'              => array(
+				'type' => 'long',
+			),
+			'name' => array(
+				'type'   => 'text',
+				'fields' => array(
+					'name' => array(
+						'type' => 'text',
+						'analyzer' => 'standard',
+					),
+					'raw'           => array(
+						'type'         => 'keyword',
+						'ignore_above' => 10922,
+					),
+					'sortable'   => array(
+						'type'         => 'keyword',
+						'ignore_above' => 10922,
+						'normalizer'   => 'lowerasciinormalizer',
+					),
+				),
+			),
+			'slug' => array(
+				'type'   => 'text',
+				'fields' => array(
+					'slug' => array(
+						'type' => 'text',
+					),
+					'raw'           => array(
+						'type'         => 'keyword',
+						'ignore_above' => 10922,
+					),
+				),
+			),
+			'url'        => array(
+				'type'   => 'text',
+				'fields' => array(
+					'url' => array(
+						'type' => 'text',
+					),
+					'raw'      => array(
+						'type'         => 'keyword',
+						'ignore_above' => 10922,
+					),
+				),
+			),
+			'status'          => array(
+				'type'   => 'text',
+				'fields' => array(
+					'status' => array(
+						'type' => 'text',
+					),
+					'raw'      => array(
+						'type'         => 'keyword',
+						'ignore_above' => 10922,
+					),
+				),
+			),
+			'group_type'            => array(
+				'type'   => 'keyword',
+				'fields' => array(
+					'group_type' => array(
+						'type' => 'keyword',
+					),
+					'raw'      => array(
+						'type'         => 'keyword',
+						'ignore_above' => 10922,
+					),
+				),
+			),
+			'meta'            => array(
+				'type' => 'object',
+			),
+			'creator_id'      => array(
+				'type' => 'long',
+			),
+			'parent_id'      => array(
+				'type' => 'long',
+			),
+			'date_created'             => array(
+				'type'   => 'date',
+				'format' => 'YYYY-MM-dd HH:mm:ss',
+			),
+			'last_activity'             => array(
+				'type'   => 'date',
+				'format' => 'YYYY-MM-dd HH:mm:ss',
+			),
+			'total_member_count' => array(
+				'type' => 'long',
+			),
+		),
+		'dynamic_templates' => array(
+			array(
+				'template_meta_types' => array(
+					'path_match' => 'meta.*',
+					'mapping'    => array(
+						'path'       => 'full',
+						'properties' => array(
+							'value'    => array(
+								'type'   => 'keyword',
+								'fields' => array(
+									'sortable' => array(
+										'type'         => 'keyword',
+										'ignore_above' => 10922,
+										'normalizer'   => 'lowerasciinormalizer',
+									),
+									'raw'      => array(
+										'type'         => 'keyword',
+										'ignore_above' => 10922,
 									),
 								),
-								'raw'      => array( /* Left for backwards compat */
-									'type'         => 'keyword',
-									'ignore_above' => 10922,
-								),
-								'long'     => array(
-									'type' => 'long',
-								),
-								'double'   => array(
-									'type' => 'double',
-								),
-								'boolean'  => array(
-									'type' => 'boolean',
-								),
-								'date'     => array(
-									'type'   => 'date',
-									'format' => 'yyyy-MM-dd',
-								),
-								'datetime' => array(
-									'type'   => 'date',
-									'format' => 'yyyy-MM-dd HH:mm:ss',
-								),
-								'time'     => array(
-									'type'   => 'date',
-									'format' => 'HH:mm:ss',
-								),
+							),
+							'raw'      => array( /* Left for backwards compat */
+								'type'         => 'keyword',
+								'ignore_above' => 10922,
+							),
+							'long'     => array(
+								'type' => 'long',
+							),
+							'double'   => array(
+								'type' => 'double',
+							),
+							'boolean'  => array(
+								'type' => 'boolean',
+							),
+							'date'     => array(
+								'type'   => 'date',
+								'format' => 'yyyy-MM-dd',
+							),
+							'datetime' => array(
+								'type'   => 'date',
+								'format' => 'yyyy-MM-dd HH:mm:ss',
+							),
+							'time'     => array(
+								'type'   => 'date',
+								'format' => 'HH:mm:ss',
 							),
 						),
 					),
-				),
-			),
-			'_all'              => array(
-				'analyzer' => 'simple',
-			),
-			'properties'        => array(
-				'ID'              => array(
-					'type' => 'long',
-				),
-				'name' => array(
-					'type'   => 'text',
-					'fields' => array(
-						'name' => array(
-							'type' => 'text',
-							'analyzer' => 'standard',
-						),
-						'raw'           => array(
-							'type'         => 'keyword',
-							'ignore_above' => 10922,
-						),
-						'sortable'   => array(
-							'type'         => 'keyword',
-							'ignore_above' => 10922,
-							'normalizer'   => 'lowerasciinormalizer',
-						),
-					),
-				),
-				'slug' => array(
-					'type'   => 'text',
-					'fields' => array(
-						'slug' => array(
-							'type' => 'text',
-						),
-						'raw'           => array(
-							'type'         => 'keyword',
-							'ignore_above' => 10922,
-						),
-					),
-				),
-				'url'        => array(
-					'type'   => 'text',
-					'fields' => array(
-						'url' => array(
-							'type' => 'text',
-						),
-						'raw'      => array(
-							'type'         => 'keyword',
-							'ignore_above' => 10922,
-						),
-					),
-				),
-				'status'          => array(
-					'type'   => 'text',
-					'fields' => array(
-						'status' => array(
-							'type' => 'text',
-						),
-						'raw'      => array(
-							'type'         => 'keyword',
-							'ignore_above' => 10922,
-						),
-					),
-				),
-				'group_type'            => array(
-					'type'   => 'text',
-					'fields' => array(
-						'group_type' => array(
-							'type' => 'text',
-						),
-						'raw'      => array(
-							'type'         => 'keyword',
-							'ignore_above' => 10922,
-						),
-					),
-				),
-				'meta'            => array(
-					'type' => 'object',
-				),
-				'creator_id'      => array(
-					'type' => 'long',
-				),
-				'parent_id'      => array(
-					'type' => 'long',
-				),
-				'date_created'             => array(
-					'type'   => 'date',
-					'format' => 'YYYY-MM-dd HH:mm:ss',
-				),
-				'last_activity'             => array(
-					'type'   => 'date',
-					'format' => 'YYYY-MM-dd HH:mm:ss',
-					'fields' => [
-						'type' => 'keyword',
-					],
-				),
-				'total_member_count' => array(
-					'type' => 'long',
 				),
 			),
 		),
