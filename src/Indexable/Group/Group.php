@@ -236,8 +236,7 @@ class Group extends Indexable {
 		$formatted_args = [
 			'from' => $args['per_page'] * ( $args['page'] - 1 ),
 			'size' => $args['per_page'],
-// @todo last_activity needs to be a keyword in order to be sortable
-//			'sort' => $this->parse_orderby( $args ),
+			'sort' => $this->parse_orderby( $args ),
 		];
 
 		$query = [];
