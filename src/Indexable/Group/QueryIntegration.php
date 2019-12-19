@@ -30,9 +30,6 @@ class QueryIntegration {
 
 		add_filter( 'bp_groups_pre_group_ids_query', [ $this, 'maybe_filter_query' ], 10, 2 );
 		add_filter( 'bp_groups_get_total_groups_sql', [ $this, 'maybe_filter_total_groups_sql' ], 10, 3 );
-
-		// Add header
-//		add_action( 'pre_get_users', array( $this, 'action_pre_get_users' ), 5 );
 	}
 
 	public function cached_results( $formatted_args, $set = null ) {
