@@ -49,7 +49,7 @@ class SyncManager extends SyncManagerAbstract {
 			return;
 		}
 
-		$this->sync_queue[ $group->id ] = true;
+		$this->add_to_queue( $object_id );
 	}
 
 	/**
@@ -61,7 +61,7 @@ class SyncManager extends SyncManagerAbstract {
 	 * @param  string    $meta_value Meta value.
 	 */
 	public function action_queue_meta_sync( $meta_id, $object_id, $meta_key, $meta_value ) {
-		$this->sync_queue[ $object_id ] = true;
+		$this->add_to_queue( $object_id );
 	}
 
 	/**
