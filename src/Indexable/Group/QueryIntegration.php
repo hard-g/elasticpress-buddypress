@@ -60,6 +60,7 @@ class QueryIntegration {
 			$ep_query = $cached;
 		}
 
+//		var_dump( $ep_query );
 		if ( false === $ep_query ) {
 			$r['elasticsearch_success'] = false;
 			return $results;

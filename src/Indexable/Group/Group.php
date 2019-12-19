@@ -250,6 +250,14 @@ class Group extends Indexable {
 			];
 		}
 
+		if ( $args['include'] ) {
+			$filter[] = [
+				'terms' => [
+					'ID' => $args['include'],
+				],
+			];
+		}
+
 		if ( $args['search_terms'] ) {
 			$filter[] = [
 				'match' => [
