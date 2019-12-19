@@ -35,13 +35,6 @@ class SyncManager extends SyncManagerAbstract {
 		add_action( 'updated_group_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		add_action( 'added_group_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
 		add_action( 'bp_groups_delete_group', [ $this, 'action_delete_group' ] );
-		/*
-		add_action( 'delete_user', [ $this, 'action_delete_user' ] );
-		add_action( 'wpmu_delete_user', [ $this, 'action_delete_user' ] );
-		add_action( 'profile_update', [ $this, 'action_sync_on_update' ] );
-		add_action( 'user_register', [ $this, 'action_sync_on_update' ] );
-		add_action( 'deleted_user_meta', [ $this, 'action_queue_meta_sync' ], 10, 4 );
-		*/
 
 		// @todo Handle deleted meta
 	}
