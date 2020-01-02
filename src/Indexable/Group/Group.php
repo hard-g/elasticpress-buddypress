@@ -258,6 +258,14 @@ class Group extends Indexable {
 		$match = [];
 		$filter = [];
 
+		if ( empty( $args['show_hidden'] ) ) {
+			$filter[] = [
+				'terms' => [
+					'status' => [ 'public', 'private' ],
+				],
+			];
+		}
+
 		if ( $args['slug'] ) {
 			$filter[] = [
 				'terms' => [
