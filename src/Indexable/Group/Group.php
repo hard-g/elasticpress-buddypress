@@ -193,6 +193,21 @@ class Group extends Indexable {
 				}
 			}
 
+			// Exclude bbPress 'forum_enabled'.
+			if ( 0 === strpos( $key, '_bbp_forum_enabled_' ) ) {
+				$allow_index = false;
+			}
+
+			// Exclude legacy BPGES items.
+			if ( 0 === strpos( $key, 'ass_user_topic_status_' ) ) {
+				$allow_index = false;
+			}
+
+			/**
+			 * We need this extra filter to allow for blacklisting of dynamic keys.
+			 */
+			$allow_index = apply_filters( 'epbp_allow_index_group_meta_key', $allow_index, $key );
+
 			if ( true === $allow_index || apply_filters( 'epbp_prepare_group_meta_whitelist_key', false, $key, $group_id ) ) {
 				$prepared_meta[ $key ] = maybe_unserialize( $value );
 			}
@@ -264,6 +279,30 @@ class Group extends Indexable {
 					'name' => $args['search_terms'],
 				],
 			];
+		}
+
+		// Convert meta_query.
+		if ( ! empty( $args['meta_query'] ) ) {
+			$exclude_meta_keys = apply_filters( 'epbp_group_query_excluded_meta_keys', [] );
+			foreach ( $args['meta_query'] as $mq ) {
+				if ( in_array( $mq['key'], $exclude_meta_keys, true ) ) {
+					continue;
+				}
+
+				if ( is_array( $mq['value'] ) ) {
+					$filter[] = [
+						'terms' => [
+							'meta.' . $mq['key'] => $mq['value'],
+						],
+					];
+				} else {
+					$filter[] = [
+						'term' => [
+							'meta.' . $mq['key'] => $mq['value'],
+						],
+					];
+				}
+			}
 		}
 
 		if ( $filter ) {
