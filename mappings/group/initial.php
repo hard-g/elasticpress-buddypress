@@ -156,6 +156,7 @@ return array(
 				'template_meta_types' => array(
 					'path_match' => 'meta.*',
 					'mapping'    => array(
+						'type'       => 'nested',
 						'path'       => 'full',
 						'properties' => array(
 							'value'    => array(
