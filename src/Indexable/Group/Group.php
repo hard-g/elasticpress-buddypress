@@ -255,7 +255,6 @@ class Group extends Indexable {
 
 		$query = [];
 		$match = [];
-		$query_must = [];
 		$filter = [];
 
 		if ( $args['slug'] ) {
@@ -275,10 +274,16 @@ class Group extends Indexable {
 		}
 
 		if ( $args['search_terms'] ) {
-			$filter[] = [
-				'match' => [
-					'name' => $args['search_terms'],
-				],
+			/**
+			 * Filters the fields to be matched by group searches.
+			 *
+			 * @param array $search_fields
+			 */
+			$search_fields = apply_filters( 'epbp_group_query_search_fields', [ 'name', 'description' ] );
+			$match = [
+				'fields'   => $search_fields,
+				'operator' => 'or',
+				'query'    => $args['search_terms'],
 			];
 		}
 
@@ -306,16 +311,14 @@ class Group extends Indexable {
 			}
 		}
 
+		if ( $match ) {
+			$query['bool']['must']['multi_match'] = $match;
+		}
+
+		$filter = apply_filters( 'epbp_group_query_filter_args', $filter, $args );
+
 		if ( $filter ) {
 			$query['bool']['filter'] = $filter;
-		}
-
-		if ( $query_must ) {
-			$query['must'] = $query_must;
-		}
-
-		if ( $match ) {
-			$query['match'] = $match;
 		}
 
 		if ( $query ) {
