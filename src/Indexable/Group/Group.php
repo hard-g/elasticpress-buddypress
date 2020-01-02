@@ -166,6 +166,7 @@ class Group extends Indexable {
 			// Serialized.
 			'ass_subscribed_users',
 			'bpdocs',
+			'bp_docs_terms',
 		];
 
 		/**
