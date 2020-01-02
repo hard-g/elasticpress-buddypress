@@ -82,6 +82,9 @@ return array(
 					),
 				),
 			),
+			'description' => array(
+				'type'   => 'text',
+			),
 			'slug' => array(
 				'type'   => 'text',
 				'fields' => array(

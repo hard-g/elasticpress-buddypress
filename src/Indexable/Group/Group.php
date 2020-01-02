@@ -73,6 +73,7 @@ class Group extends Indexable {
 		$group_args = [
 			'ID'                 => $group->id,
 			'name'               => $group->name,
+			'description'        => $group->description,
 			'slug'               => $group->slug,
 			'url'                => bp_get_group_permalink( $group ),
 			'status'             => $group->status,
